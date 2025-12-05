@@ -1,7 +1,7 @@
 const redis = require("redis");
 const redisUrl = "redis://127.0.0.1:6379";
 const client = redis.createClient({ url: redisUrl });
-// test 2
+// test 3
 const cacheMiddleware = (duration = 3600) => {
   return (req, res, next) => {
     if (req.method !== "GET") {
