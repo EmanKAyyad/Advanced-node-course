@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
-const cacheMiddleware = require("../middlewares/cache").cacheMiddleware;
-const clearCache = require("../middlewares/cache").clearCache;
 const Blog = mongoose.model("Blog");
 
 module.exports = (app) => {
@@ -14,18 +12,13 @@ module.exports = (app) => {
     res.send(blog);
   });
 
-  app.get(
-    "/api/blogs",
-    requireLogin,
-    cacheMiddleware(3600),
-    async (req, res) => {
-      const blogs = await Blog.find({ _user: req.user.id });
-      console.log("blogs fetched");
-      res.send(blogs);
-    }
-  );
+  app.get("/api/blogs", requireLogin, async (req, res) => {
+    const blogs = await Blog.find({ _user: req.user.id });
+    console.log("blogs fetched from db");
+    res.send(blogs);
+  });
 
-  app.post("/api/blogs", requireLogin, clearCache, async (req, res) => {
+  app.post("/api/blogs", requireLogin, async (req, res) => {
     const { title, content } = req.body;
 
     const blog = new Blog({

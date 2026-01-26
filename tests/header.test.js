@@ -1,17 +1,14 @@
 const puppeteer = require("puppeteer");
-const buildPage = require("./utils/login");
-let browser, page;
+const TestingPage = require("./utils/login");
+let page;
 
 beforeEach(async () => {
-  // browser = await puppeteer.launch({
-  //   headless: false,
-  // });
-  // page = await browser.newPage();
-  // await page.goto("localhost:3000");
+  page = await TestingPage.buildPage();
+  await page.login();
 });
 
-afterEach(() => {
-  // browser.close();
+afterEach(async () => {
+  await page.close();
 });
 
 test("Login using OAuth", async () => {
@@ -22,11 +19,9 @@ test("Login using OAuth", async () => {
 });
 
 test.only("Logout button exists after user is logged in", async () => {
-  const loginPage = await buildPage();
-  await loginPage.login();
-  const button = await loginPage.$eval(
+  const button = await page.$eval(
     "ul.right li:last-of-type a",
-    (el) => el.textContent
+    (el) => el.textContent,
   );
   expect(button).toBe("Logout");
 });

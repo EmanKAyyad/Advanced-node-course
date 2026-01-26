@@ -3,6 +3,21 @@ const userFactory = require("../factories/user.factory");
 const sessionFactory = require("../factories/session.factory");
 
 class TestingPage {
+  static async buildPage() {
+    const browser = await puppeteer.launch({
+      headless: false,
+    });
+    const page = await browser.newPage();
+    const testPage = new TestingPage();
+
+    const testingPage = new Proxy(testPage, {
+      get: function (target, property) {
+        return target[property] || browser[property] || page[property];
+      },
+    });
+
+    return testingPage;
+  }
   async login() {
     const user = await userFactory();
     console.log(user);
@@ -24,20 +39,4 @@ class TestingPage {
   }
 }
 
-const buildPage = async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
-  });
-  const page = await browser.newPage();
-  const testPage = new TestingPage();
-
-  const testingPage = new Proxy(testPage, {
-    get: function (target, property) {
-      return target[property] || page[property];
-    },
-  });
-
-  return testingPage;
-};
-
-module.exports = buildPage;
+module.exports = TestingPage;
