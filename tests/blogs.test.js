@@ -10,6 +10,8 @@ afterEach(async () => {
   await page.close();
 });
 
+//TODO: describe for not adding inputs and click submit to test error message.
+
 describe("When logged in", () => {
   beforeEach(async () => {
     await page.goto("http://localhost:3000/blogs", {
@@ -37,3 +39,5 @@ describe("When logged in", () => {
     expect(url).toMatch("http://localhost:3000/blogs");
   });
 });
+
+// TODO: add test to call apis without logging in.
